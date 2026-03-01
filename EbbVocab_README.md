@@ -89,6 +89,24 @@ npm install
 cp .env.example .env
 npm run dev
 
+### Windows PowerShell 推荐验收命令（Issue 1）
+
+```powershell
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env
+# 默认使用 SQLite：DATABASE_URL=sqlite:///./ebbvocab.db
+python -m alembic upgrade head
+python -m uvicorn app.main:app --reload
+```
+
+说明：
+- Issue 1 可直接走 SQLite 验收路径，不依赖本地 Postgres。
+- 若 PowerShell 中 `alembic` 或 `uvicorn` 命令找不到，优先使用 `python -m alembic` 与 `python -m uvicorn`。
+- 启动后访问 `GET /health`，返回 JSON 并包含 `database` 字段。
+
 ## 四、环境变量
 
 后端：

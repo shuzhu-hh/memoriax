@@ -1,7 +1,8 @@
 from functools import lru_cache
+from typing import Annotated
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -9,7 +10,7 @@ class Settings(BaseSettings):
     secret_key: str = "change-me-in-production"
     jwt_expire_minutes: int = 10080
     env: str = "development"
-    cors_allow_origins: list[str] = ["http://localhost:5173"]
+    cors_allow_origins: Annotated[list[str], NoDecode] = ["http://localhost:5173"]
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -31,4 +32,3 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
-
