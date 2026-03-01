@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./backend
+    container_name: ebbvocab-api
+    environment:
+      DATABASE_URL: sqlite:////app/data/ebbvocab.db
+      SECRET_KEY: change-me-in-production
+      JWT_EXPIRE_MINUTES: "10080"
+      ENV: production
+      CORS_ALLOW_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - sqlite_data:/app/data
+    expose:
+      - "8000"
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: ebbvocab-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  sqlite_data:
