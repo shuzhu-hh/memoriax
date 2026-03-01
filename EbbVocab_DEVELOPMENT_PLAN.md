@@ -11,7 +11,7 @@
 
 - [x] Issue 0：项目结构与文档初始化
 - [x] Issue 1：后端基础结构（2026-03-01）
-- [ ] Issue 2：用户系统
+- [x] Issue 2：用户系统（2026-03-01）
 - [ ] Issue 3：Deck 与 Word CRUD
 - [ ] Issue 4：复习调度系统
 - [ ] Issue 5：统计接口
