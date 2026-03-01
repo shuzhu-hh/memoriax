@@ -162,3 +162,25 @@ JWT 鉴权
 严格 user_id 过滤
 
 生产环境必须使用 Postgres
+
+## 八、Issue 4 复习接口（/docs 操作）
+
+先登录并获取 token：
+- `POST /auth/register`
+- `POST /auth/login`
+
+在 `/docs` 右上角点击 `Authorize`，输入：
+- `Bearer <access_token>`
+
+推荐演示流程：
+1. `POST /decks` 创建一个 deck
+2. `POST /decks/{deck_id}/words/import`
+   - `content` 示例：`apple<TAB>苹果` 换行 `banana`
+3. `GET /reviews/queue?deck_id={deck_id}&limit=20`
+   - 返回到期词；不足时会用新词补齐
+4. `POST /reviews/{word_id}`，body 示例：`{"grade":4}`
+   - 系统按 SM-2 简化规则更新 `repetition/interval/ease_factor/due_at`
+   - 同时写入 `review_logs`
+5. `GET /reviews/stats?deck_id={deck_id}`
+   - 查看 `today_due_count`、`total_due_count`、`learned_count`、`new_count`
+   - `next_7_days_due` 为未来 7 天到期聚合

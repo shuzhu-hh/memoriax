@@ -13,7 +13,7 @@
 - [x] Issue 1：后端基础结构（2026-03-01）
 - [x] Issue 2：用户系统（2026-03-01）
 - [x] Issue 3：Deck 与 Word CRUD（2026-03-01）
-- [ ] Issue 4：复习调度系统
+- [x] Issue 4：复习调度系统（2026-03-01）
 - [ ] Issue 5：统计接口
 - [ ] Issue 6：前端登录与路由
 - [ ] Issue 7：前端 CRUD 页面
@@ -99,6 +99,13 @@
 - 固定间隔算法实现
 - 提交评分接口
 - 获取到期队列接口
+
+实现记录：
+- 新增 `/reviews/queue`（到期优先 + 新词补齐，支持 deck 过滤）
+- 新增 `/reviews/{word_id}`（SM-2 简化打分调度 + ReviewLog 落库）
+- 新增 `/reviews/stats`（today/total due、learned/new、未来 7 天到期聚合）
+- 新增 `review_logs` 表并通过 Alembic 迁移
+- 全部 reviews 接口按 `user_id` 强隔离，越权返回 404
 
 验收：
 - 等级变化正确
