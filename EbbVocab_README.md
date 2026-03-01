@@ -184,3 +184,65 @@ JWT 鉴权
 5. `GET /reviews/stats?deck_id={deck_id}`
    - 查看 `today_due_count`、`total_due_count`、`learned_count`、`new_count`
    - `next_7_days_due` 为未来 7 天到期聚合
+
+## 九、Docker 一键启动与部署（Issue 10）
+
+### 1）一键启动
+
+在仓库根目录执行：
+
+```powershell
+docker compose up --build
+```
+
+启动后访问：
+- 前端：http://localhost:8080
+- 后端健康检查（容器内 API）：通过前端反代可访问 `http://localhost:8080/api/health`
+
+说明：
+- 前端由 `web` 容器（nginx）提供静态页面
+- 后端由 `api` 容器（uvicorn）提供接口
+- 前端通过 `/api/*` 反向代理访问后端，避免浏览器跨域问题
+
+### 2）常用命令
+
+```powershell
+# 后台启动
+docker compose up --build -d
+
+# 查看服务状态
+docker compose ps
+
+# 查看日志
+docker compose logs -f
+
+# 仅重建并启动某个服务
+docker compose up --build -d web
+docker compose up --build -d api
+
+# 停止并删除容器/网络
+docker compose down
+
+# 停止并删除容器/网络/数据卷（会清空 SQLite 数据）
+docker compose down -v
+```
+
+### 3）环境变量说明
+
+#### 后端（`api` 服务）
+- `DATABASE_URL`：SQLite 路径（compose 默认 `sqlite:////app/data/ebbvocab.db`）
+- `SECRET_KEY`：JWT 签名密钥（生产环境必须替换）
+- `JWT_EXPIRE_MINUTES`：Token 过期时间（分钟）
+- `ENV`：环境标识（示例：`production`）
+- `CORS_ALLOW_ORIGINS`：允许跨域来源（逗号分隔）
+
+#### 前端（`web` 服务）
+- `VITE_API_BASE_URL`：前端构建时 API 基地址（compose 默认 `/api`）
+
+### 4）验收步骤
+
+1. 启动服务：`docker compose up --build`
+2. 打开 `http://localhost:8080`，确认前端可访问
+3. 在浏览器访问 `http://localhost:8080/api/health`，确认后端可用并返回 JSON
+4. 在页面中注册/登录并创建单词本、添加单词，确认业务可用
+5. 执行 `docker compose down` 后再 `docker compose up -d`，刷新页面确认数据仍在（SQLite volume 持久化）
